@@ -1,6 +1,6 @@
-const fs = require('fs');
 const inquirer = require('inquirer');
 const generatePage = require('./src/page-template.js');
+const { writeFile, copyFile } = require('./utils/generate-site');
 
 const promptUser = () => {
     return inquirer
@@ -130,76 +130,20 @@ const promptProject = portfolioData => {
 }
 
 promptUser()
-    .then(promptProject)
-    .then(portfolioData => {
-        const pageHTML = generatePage(portfolioData);
-
-        fs.writeFile('./index.html', pageHTML, err => {
-            if (err) throw new Error(err);
-
-            console.log("Portfolio Created! Check index.html for the output!");
-        });
-    });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// console.log(profileDataArgs);
-
-// const printProfileData = profileDataArr => {
-//     // this...
-//     for (let i = 0; i < profileDataArr.length; i += 1) {
-//         console.log(profileDataArr[i]);
-//     }
-//     console.log('================');
-
-//     // is the same as this...
-//     profileDataArr.forEach(profileItem =>
-//         console.log(profileItem)
-//     );
-
-// }
-
-// printProfileData(profileDataArgs);
-
-// const addNums = (numOne, numTwo) => numOne + numTwo;
-// const sum = addNums(5, 3);
-// console.log(sum);
-
-
-
-
-// const profileDataArgs = process.argv.slice(2);
-// console.log(profileDataArgs);
-
-// const [name, github] = profileDataArgs;
-// console.log(name, github);
+  .then(promptProject)
+  .then(portfolioData => {
+    return generatePage(portfolioData);
+  })
+  .then(pageHTML => {
+    return writeFile(pageHTML);
+  })
+  .then(writeFileResponse => {
+    console.log(writeFileResponse);
+    return copyFile();
+  })
+  .then(copyFileResponse => {
+    console.log(copyFileResponse);
+  })
+  .catch(err => {
+    console.log(err);
+  });
